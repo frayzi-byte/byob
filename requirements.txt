@@ -1,29 +1,37 @@
+# Core dependencies for Python 3.11 on Linux (Render) - Optimized Versions
+colorama==0.4.6
+requests==2.31.0
+PyInstaller==6.6.0
+pycryptodome==3.19.0
+numpy==1.26.4
+mss==5.0.0
+opencv-python==4.8.1.78
+
+# Windows-specific replacements (kept for compatibility, may require fallback or specific builds on Linux)
+WMI==1.4.9
+pyxhook==1.0.0
+twilio==6.35.4
 py-cryptonight>=0.2.4
 git+https://github.com/jtgrassie/pyrx.git@master#egg=pyrx
 
-mss==5.0.0;python_version>'3'
-WMI==1.4.9;python_version>'3'
-numpy>=1.26.0;python_version>'3'
-pyxhook==1.0.0;python_version>'3'
-twilio==6.35.4;python_version>'3'
-colorama==0.4.3;python_version>'3'
-requests==2.22.0;python_version>'3'
-PyInstaller==3.6;python_version>'3'
-pycryptodome==3.9.6;python_version>'3'
+# Additional utilities often needed for C2 bots (added to ensure stability)
+psutil==5.9.8
+setuptools==69.0.3
+wheel==0.43.0
 
-mss==3.3.0;python_version<'3'
-WMI==1.4.9;python_version<'3'
-numpy==1.15.2;python_version<'3'
-pyxhook==1.0.0;python_version<'3'
-twilio==6.14.0;python_version<'3'
-colorama==0.3.9;python_version<'3'
-requests==2.20.0;python_version<'3'
-PyInstaller==3.6;python_version<'3'
-pycryptodomex==3.8.1;python_version<'3'
+# Legacy/Windows-specific packages (kept as per original list, pip will try to install compatible versions or skip if not found on Linux)
+pyHook==1.5.1
+pypiwin32==223
 
+# Conditional dependencies for Python 2 (removed since you use 3.11, but kept structure in mind)
+mss==3.3.0; python_version < '3'
+WMI==1.4.9; python_version < '3'
+numpy==1.15.2; python_version < '3'
+pyxhook==1.0.0; python_version < '3'
+twilio==6.14.0; python_version < '3'
+colorama==0.3.9; python_version < '3'
+requests==2.20.0; python_version < '3'
+PyInstaller==3.6; python_version < '3'
+pycryptodomex==3.8.1; python_version < '3'
 
-opencv-python==3.4.3.18;python_version<'3'
-
-
-pyHook==1.5.1;sys.platform=='win32'
-pypiwin32==223;sys.platform=='win32'
+opencv-python==3.4.3.18; python_version < '3'
