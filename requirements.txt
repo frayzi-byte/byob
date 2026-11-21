@@ -1,11 +1,11 @@
-# Core dependencies for Python 3.11 on Linux (Render Optimized) - All Original Packages Kept
+# Core dependencies for Python 3.10 on Linux (Render Optimized) - All Original Packages Kept
 colorama==0.4.6
 requests==2.31.0
 PyInstaller==6.6.0
 pycryptodome==3.19.0
-numpy==1.26.2          # Стабильная версия для 3.11 (избегаем проблем с компиляторами в старых образах)
+numpy==1.24.3          # Стабильная версия для 3.10 (избегаем проблем с компиляторами в старых образах)
 mss==9.0.1             # Обновленная версия скриншотов (вместо 5.0.0, которая устарела)
-opencv-python-headless==4.8.0.82 # Headless версия для сервера (не требует графических библиотек, работает в Docker)
+opencv-python-headless==4.8.0.76 # Последняя стабильная версия для 3.10 (работает в Docker)
 
 # Windows-specific replacements (kept for compatibility, may require fallback or specific builds on Linux)
 WMI==1.4.9
@@ -22,7 +22,7 @@ wheel==0.43.0
 pyHook==1.5.1; sys_platform == 'win32'
 pypiwin32==223; sys_platform == 'win32'
 
-# Conditional dependencies for Python 2 (removed since you use 3.11, but kept structure in mind)
+# Conditional dependencies for Python 2 (removed since you use 3.10, but kept structure in mind)
 mss==3.3.0; python_version < '3'
 WMI==1.4.9; python_version < '3'
 numpy==1.15.2; python_version < '3'
@@ -35,6 +35,6 @@ pycryptodomex==3.8.1; python_version < '3'
 
 opencv-python==3.4.3.18; python_version < '3'
 
-# FIXED: Replaced git repo with a stable release version compatible with Python 3.11
-# This avoids the pybind11 compilation issues on Python 3.11 in Docker/Render environments
+# FIXED: Replaced git repo with a stable release version compatible with Python 3.10
+# This avoids the pybind11 compilation issues on Python 3.10 in Docker/Render environments
 pyrx==0.2.4
