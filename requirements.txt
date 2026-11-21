@@ -20,8 +20,8 @@ setuptools==69.0.3
 wheel==0.43.0
 
 # Legacy/Windows-specific packages (kept as per original list, pip will try to install compatible versions or skip if not found on Linux)
-pyHook==1.5.1
-pypiwin32==223
+pyHook==1.5.1; sys_platform == 'win32'
+pypiwin32==223; sys_platform == 'win32'
 
 # Conditional dependencies for Python 2 (removed since you use 3.11, but kept structure in mind)
 mss==3.3.0; python_version < '3'
@@ -35,3 +35,4 @@ PyInstaller==3.6; python_version < '3'
 pycryptodomex==3.8.1; python_version < '3'
 
 opencv-python==3.4.3.18; python_version < '3'
+
