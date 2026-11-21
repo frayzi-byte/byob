@@ -1,74 +1,102 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-import os
-import sys
-import logging
-import subprocess
+'Setup (Build Your Own Botnet)'
 
 def main():
     """
-    Run the BYOB setup script (Optimized for Render + Windows Clients)
+    Run the BYOB setup script
+
     """
-    
-    # Настройка логирования
-    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+    import os
+    import sys
+    import logging
+    import subprocess
+
+    # debugging
+    logging.basicConfig(level=logging.DEBUG, handlers=[logging.StreamHandler()])
     logger = logging.getLogger(__name__)
 
-    # 1. Поиск requirements.txt
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    req_path = None
-    
-    if os.path.exists(os.path.join(current_dir, 'requirements.txt')):
-        req_path = os.path.join(current_dir, 'requirements.txt')
-    elif os.path.exists(os.path.join(current_dir, 'byob', 'requirements.txt')):
-        req_path = os.path.join(current_dir, 'byob', 'requirements.txt')
-
-    if not req_path:
-        logger.error("Could not find requirements.txt")
-        sys.exit(1)
-
-    # 2. Системные зависимости для Linux (Render) - OpenCV и т.д.
-    if os.name != "nt":
-        try:
-            import apt
-            aptcache = apt.Cache()
-            if not aptcache['python3-opencv'].is_installed:
-                subprocess.run(['sudo', 'apt-get', 'update'], check=True, capture_output=True)
-                subprocess.run(['sudo', 'apt-get', 'install', '-y', 'libgl1-mesa-glx', 'libglib2.0-0', 'libsm6', 'libxext6', 'libxrender-dev', 'libxcursor-dev', 'libxi-dev', 'libxtst-dev'], check=True, capture_output=True)
-                subprocess.run(['sudo', 'apt-get', 'install', '-y', 'python3-opencv'], check=True, capture_output=True)
-        except ImportError:
+    #urllib vomit
+    if sys.version_info[0] > 2:
+        from urllib.request import urlopen
+        # for mainstream linux kernel we need to get opencv from the repo, else it must be compiled from source;
+        # this, to prevent a segfault at runtime for resources loading cv2 package in python3
+        if os.name != "nt":
             try:
-                import yum
-                # ... аналогично для RHEL (опционально)
-            except ImportError:
-                logger.info("System packages for OpenCV not found or already installed. Continuing...")
+                import apt
+                aptcache = apt.Cache()
+                if not aptcache['python3-opencv'].is_installed:
+                    logger.error('Install python3-opencv before continuing:\n\n        sudo apt install python3-opencv\n')
+                    sys.exit()
+            except:
+                #assuming then we're rhel based
+                try:
+                    import yum
+                    yumapp = yum.YumBase()
+                    rpmdb = yumapp.doPackageLists(patterns="python3-opencv")
+                    if not rpmdb.installed:
+                        logger.error('Install python3-opencv before continuing:\n\n        sudo yum install python3-opencv\n')
+                        sys.exit()
+                except:
+                    logger.error('Unable to determine if python3-opencv is installed; continuing anyway.\n        If you get a cv2 import error, install python3-opencv')
+    else:
+        from urllib import urlopen
 
-    # 3. Установка pip (если нужно)
+    # find pip
+    try:
+        pip_path = subprocess.check_output('where pip' if os.name == 'nt' else 'which pip', shell=True).strip().rstrip()
+    except Exception as e:
+        logger.debug("Error in pip package installer: {}".format(str(e)))
+
+    # install pip if missing
     try:
         import pip
-    except ImportError:
+    except:
+        # intrct: removing this check -- the import pip failure above should make this check unnecessary, and 
+        #           it actually becomes a problem if someone runs python 2.7.x and 3.x on the same host.
+        #if not bool('pip_path' in locals() and os.path.exists(pip_path)) and 
         if os.name != "nt":
-            subprocess.run([sys.executable, '-m', 'pip', 'install', '--upgrade', 'pip'], check=True)
+            try:
+                # NOTE: intrct -- I think this is a bad practice (instituting execution of arbitrary remote code we don't control).
+                if os.getuid() != 0:
+                    # intrct: added this exit because otherwise this just runs in an infinite loop; I still think it's a bad idea.
+                    logger.error("pip is not installed or a module, so setup must run elevated (sudo)")
+                    sys.exit()
+                # intrct: added check for version for proper callout materials, and 
+                # running as subprocess rather than internal due to potential early exits in remote code.
+                if sys.version_info[0] > 2:
+                    subprocess.check_call("""{} -c 'from urllib.request import urlopen; exec(urlopen("https://bootstrap.pypa.io/get-pip.py").read())'""".format(sys.executable), shell=True)
+                else:
+                    subprocess.check_call("""{} -c 'from urllib import urlopen; exec(urlopen("https://bootstrap.pypa.io/get-pip.py").read())'""".format(sys.executable), shell=True)
+            except Exception as e:
+                logger.debug("Error installing pip: {}".format(str(e)))
 
-    # 4. Установка зависимостей из requirements.txt
+            # restart
+            # intrct: I would like to point out a limitation that this only installs packages for the linked "python"
+            #           and not the called version of python in the original runtime.
+            os.execv(sys.executable, ['python'] + [os.path.abspath(sys.argv[0])] + sys.argv[1:])
+
+    # find requirements
+    for tree in os.walk('..'):
+        if 'byob' not in tree[0]:
+            continue
+        elif 'requirements.txt' in tree[2]:
+            requirements = os.path.join(tree[0], 'requirements.txt')
+            break
+
+    # install requirements
     try:
-        print("\n" + "="*50)
-        print("Installing Python dependencies from: {}".format(req_path))
-        print("="*50 + "\n")
-        
-        cmd = "{} -m pip install --upgrade -r {}".format(sys.executable, req_path)
-        result = subprocess.run(cmd, shell=True, capture_output=False, text=True)
-        
-        if result.returncode == 0:
-            logger.info("Dependencies installed successfully!")
+        print("Installing requirements.txt")
+        if os.name != "nt":
+            locals()['pip_install_1'] = subprocess.Popen('sudo --prompt=" Please enter sudo password (to install python dependencies): " {} -m pip install -r {}'.format(sys.executable, requirements), 0, None, subprocess.PIPE, subprocess.PIPE, subprocess.PIPE, shell=True)
         else:
-            logger.error(f"Error installing dependencies:\n{result.stderr}")
-            sys.exit(1)
-
+            locals()['pip_install_1'] = subprocess.Popen('{} -m pip install -r {}'.format(sys.executable, requirements), 0, None, subprocess.PIPE, subprocess.PIPE, subprocess.PIPE, shell=True)           
+        for line in locals()['pip_install_1'].stdout:
+            print(line.decode())
+            sys.stdout.flush()
     except Exception as e:
-        logger.error(f"Unexpected error during installation: {e}")
-        sys.exit(1)
+        logger.error("Error installing requirements: {}".format(e))
 
 if __name__ == '__main__':
     main()
