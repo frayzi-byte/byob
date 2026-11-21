@@ -431,8 +431,12 @@ class C2():
         return None
 
     def _get_prompt(self, data):
-        with self._lock:
-            return raw_input(getattr(colorama.Fore, self._prompt_color) + getattr(colorama.Style, self._prompt_style) + data.rstrip())
+        # Используем input() вместо raw_input() для совместимости с Python 3 и вебом
+        try:
+            return input(getattr(colorama.Fore, self._prompt_color) + getattr(colorama.Style, self._prompt_style) + data.rstrip())
+        except EOFError:
+            # Если ввод прерван (например, при перезапуске или в веб-контексте), возвращаем пустую строку
+            return ""
 
     def _execute(self, args):
         # ugly method that should be refactored at some point
