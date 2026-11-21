@@ -1,40 +1,15 @@
-# Core dependencies for Python 3.10 on Linux (Render Optimized) - All Original Packages Kept
-colorama==0.4.6
-requests==2.31.0
-PyInstaller==6.6.0
-pycryptodome==3.19.0
-numpy==1.24.3          # Стабильная версия для 3.10 (избегаем проблем с компиляторами в старых образах)
-mss==9.0.1             # Обновленная версия скриншотов (вместо 5.0.0, которая устарела)
-opencv-python-headless==4.8.0.76 # Последняя стабильная версия для 3.10 (работает в Docker)
-
-# Windows-specific replacements (kept for compatibility, may require fallback or specific builds on Linux)
+py-cryptonight>=0.2.4
+git+https://github.com/jtgrassie/pyrx.git#egg=pyrx
+mss==5.0.0
 WMI==1.4.9
+numpy==1.18.1
 pyxhook==1.0.0
 twilio==6.35.4
-py-cryptonight>=0.2.4
-
-# Additional utilities often needed for C2 bots (added to ensure stability)
-psutil==5.9.8
-setuptools==69.0.3
-wheel==0.43.0
-
-# Legacy/Windows-specific packages (kept as per original list, pip will try to install compatible versions or skip if not found on Linux)
-pyHook==1.5.1; sys_platform == 'win32'
-pypiwin32==223; sys_platform == 'win32'
-
-# Conditional dependencies for Python 2 (removed since you use 3.10, but kept structure in mind)
-mss==3.3.0; python_version < '3'
-WMI==1.4.9; python_version < '3'
-numpy==1.15.2; python_version < '3'
-pyxhook==1.0.0; python_version < '3'
-twilio==6.14.0; python_version < '3'
-colorama==0.3.9; python_version < '3'
-requests==2.20.0; python_version < '3'
-PyInstaller==3.6; python_version < '3'
-pycryptodomex==3.8.1; python_version < '3'
-
-opencv-python==3.4.3.18; python_version < '3'
-
-# FIXED: Replaced git repo with a stable release version compatible with Python 3.10
-# This avoids the pybind11 compilation issues on Python 3.10 in Docker/Render environments
-pyrx==0.2.4
+colorama==0.4.3
+requests==2.22.0
+PyInstaller==3.6
+pycryptodome==3.9.6
+pycrypto==2.6.1
+opencv-python==3.4.3.18
+pyHook==1.5.1
+pypiwin32==223
