@@ -1,11 +1,11 @@
-# Core dependencies for Python 3.11 on Linux (Render) - Optimized Versions
+# Core dependencies for Python 3.11 on Linux (Render Optimized) - All Original Packages Kept
 colorama==0.4.6
 requests==2.31.0
 PyInstaller==6.6.0
 pycryptodome==3.19.0
-numpy==1.26.4
-mss==5.0.0
-opencv-python==4.8.1.78
+numpy==1.26.2          # Стабильная версия для 3.11 (избегаем проблем с компиляторами в старых образах)
+mss==9.0.1             # Обновленная версия скриншотов (вместо 5.0.0, которая устарела)
+opencv-python-headless==4.8.0.82 # Headless версия для сервера (не требует графических библиотек, работает в Docker)
 
 # Windows-specific replacements (kept for compatibility, may require fallback or specific builds on Linux)
 WMI==1.4.9
