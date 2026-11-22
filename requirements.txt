@@ -8,6 +8,7 @@ Flask_Login
 Flask_Bcrypt
 flask_mail
 wtforms
+gunicorn
 mss==3.3.0
 WMI==1.4.9
 pyxhook==1.0.0
